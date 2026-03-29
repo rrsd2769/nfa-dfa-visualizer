@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import Graph from "./Graph";
 import Controls from "./Controls";
 import Sidebar from "./Sidebar";
@@ -28,8 +28,6 @@ export default function App() {
 	const [simStatus, setSimStatus] = useState("idle"); // idle | running | done
 	const [convertLog, setConvertLog] = useState([]);
 	const [speed, setSpeed] = useState(700);
-
-	//const simRef = useRef({ index: 0, current: [DEFAULT_START], running: false, interval: null });
 
 	// ---- State Management ----
 	const addState = useCallback(
@@ -131,6 +129,16 @@ export default function App() {
 		};
 	}, []);
 
+	const finalize = useCallback(
+		(curr) => {
+			const accepted = curr.some((s) => acceptStates.includes(s));
+			setResult(accepted ? "accepted" : "rejected");
+			setSimStatus("done");
+			setActiveEdges(new Set());
+		},
+		[acceptStates],
+	);
+
 	const step = useCallback(() => {
 		const r = doStep(
 			simIndex,
@@ -139,6 +147,8 @@ export default function App() {
 			inputStr,
 			acceptStates,
 			mode,
+			doStep,
+			finalize,
 		);
 		if (!r) {
 			finalize(simCurrent);
@@ -163,16 +173,30 @@ export default function App() {
 			},
 		]);
 		if (simIndex + 1 >= inputStr.length) setTimeout(() => finalize(r.to), 300);
-	}, [simIndex, simCurrent, transitions, inputStr, acceptStates, mode]);
+	}, [
+		simIndex,
+		simCurrent,
+		transitions,
+		inputStr,
+		acceptStates,
+		mode,
+		doStep,
+		finalize,
+	]);
 
-	const finalize = useCallback(
-		(curr) => {
-			const accepted = curr.some((s) => acceptStates.includes(s));
-			setResult(accepted ? "accepted" : "rejected");
-			setSimStatus("done");
+	const reset = useCallback(
+		(full = true) => {
+			setSimIndex(0);
+			setSimCurrent([startState]);
 			setActiveEdges(new Set());
+			setVisitedEdges(new Set());
+			if (full) {
+				setTraceLog([]);
+				setResult(null);
+			}
+			setSimStatus("idle");
 		},
-		[acceptStates],
+		[startState],
 	);
 
 	const run = useCallback(() => {
@@ -209,22 +233,16 @@ export default function App() {
 			curr = r.to;
 			idx++;
 		}, speed);
-	}, [startState, transitions, inputStr, acceptStates, mode, speed, doStep]);
-
-	const reset = useCallback(
-		(full = true) => {
-			setSimIndex(0);
-			setSimCurrent([startState]);
-			setActiveEdges(new Set());
-			setVisitedEdges(new Set());
-			if (full) {
-				setTraceLog([]);
-				setResult(null);
-			}
-			setSimStatus("idle");
-		},
-		[startState],
-	);
+	}, [
+		startState,
+		transitions,
+		inputStr,
+		acceptStates,
+		mode,
+		speed,
+		doStep,
+		reset,
+	]);
 
 	// ---- NFA→DFA ----
 	const handleConvert = useCallback(() => {
