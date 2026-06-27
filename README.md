@@ -1,6 +1,6 @@
-# ⊕ Automata Lab — NFA / DFA Visualizer
+#  NFA / DFA Visualizer
 
-An interactive browser-based tool for building, simulating, and converting finite automata. Design NFA or DFA graphs through a point-and-click interface, step through input strings with live visual feedback, and convert any NFA to an equivalent DFA using the subset construction algorithm — all in real time.
+An interactive browser-based tool for building, simulating, and converting finite automata. Design NFA or DFA graphs through a point-and-click interface, step through input strings with live visual feedback, and convert any NFA to an equivalent DFA using the subset construction algorithm : all in real time.
 
 **Live Demo → [nfa-dfa-visualizer-sigma.vercel.app](https://nfa-dfa-visualizer-sigma.vercel.app)**
 
@@ -8,15 +8,15 @@ An interactive browser-based tool for building, simulating, and converting finit
 
 ## Features
 
-- **Dual-mode automaton editor** — switch between NFA and DFA mode at any time
-- **Interactive graph canvas** — drag nodes to rearrange; self-loops and curved reverse edges render automatically
-- **ε-transition support** — define epsilon transitions in NFA mode; ε-closure is computed automatically during simulation
-- **Step-by-step simulation** — advance one symbol at a time or run the full input at a configurable speed
-- **Live step trace** — right panel logs every δ(state, symbol) → next-state transition as it happens
-- **NFA → DFA conversion** — one-click subset construction with a full conversion log showing every powerset state and its transitions
-- **Transition table** — always-visible δ table in the sidebar updates live as you add or remove transitions
-- **Import / Export** — save your automaton as JSON and reload it in a future session
-- **Input string tokenizer** — each character of the input string is highlighted as the simulation progresses
+- **Dual-mode automaton editor** : switch between NFA and DFA mode at any time
+- **Interactive graph canvas** : drag nodes to rearrange; self-loops and curved reverse edges render automatically
+- **ε-transition support** : define epsilon transitions in NFA mode; ε-closure is computed automatically during simulation
+- **Step-by-step simulation** : advance one symbol at a time or run the full input at a configurable speed
+- **Live step trace** : right panel logs every δ(state, symbol) → next-state transition as it happens
+- **NFA → DFA conversion** : one-click subset construction with a full conversion log showing every powerset state and its transitions
+- **Transition table** : always-visible δ table in the sidebar updates live as you add or remove transitions
+- **Import / Export** : save your automaton as JSON and reload it in a future session
+- **Input string tokenizer** : each character of the input string is highlighted as the simulation progresses
 
 ---
 
@@ -73,12 +73,12 @@ Output goes to the `build/` directory, ready to serve from any static host.
 
 ```
 src/
-├── App.js          # Root component — owns all state, wires simulation & conversion
-├── Controls.js     # Top bar — mode toggle, speed slider, Run / Step / Reset / Convert buttons
-├── Sidebar.js      # Left panel — state manager, transition editor, input string, transition table, import/export
-├── Graph.js        # Centre canvas — SVG graph with draggable nodes and animated edges
-├── TracePanel.js   # Right panel — active states display, accept/reject result, step trace, NFA→DFA log
-├── simulator.js    # Pure logic — epsilonClosure, stepSimulation, nfaToDFA (subset construction)
+├── App.js          # Root component : owns all state, wires simulation & conversion
+├── Controls.js     # Top bar : mode toggle, speed slider, Run / Step / Reset / Convert buttons
+├── Sidebar.js      # Left panel : state manager, transition editor, input string, transition table, import/export
+├── Graph.js        # Centre canvas : SVG graph with draggable nodes and animated edges
+├── TracePanel.js   # Right panel : active states display, accept/reject result, step trace, NFA→DFA log
+├── simulator.js    # Pure logic : epsilonClosure, stepSimulation, nfaToDFA (subset construction)
 ├── styles.css      # All component styles via CSS custom properties
 └── index.css       # Google Fonts import and body reset
 ```
@@ -118,8 +118,8 @@ Nodes are positioned in a circle on first render and can be freely dragged. Posi
 
 Edges are built by grouping all transitions that share the same `(from, to)` pair into a single path, with their symbols joined (e.g. `a,b`). Two geometric cases:
 
-- **Self-loop** — cubic Bézier anchored above the node
-- **Straight / curved edge** — quadratic Bézier; curves away from the baseline if a reverse edge exists in the same graph, so antiparallel transitions don't overlap
+- **Self-loop** : cubic Bézier anchored above the node
+- **Straight / curved edge** : quadratic Bézier; curves away from the baseline if a reverse edge exists in the same graph, so antiparallel transitions don't overlap
 
 Active edges glow blue; visited (already-traversed) edges glow green. Transitions are achieved with CSS `transition` on `stroke` and `stroke-width`.
 
